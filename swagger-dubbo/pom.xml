@@ -103,4 +103,22 @@
 		</plugins>
 	</build>
 
+
+
+	<distributionManagement>
+		<repository>
+			<!--这里面的名字要跟 setting.xml 文件中 servers 里面的一致-->
+			<!--这个是 release 库的发布地址-->
+			<id>releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://192.168.16.37:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<!--这里面的名字要跟 setting.xml 文件中 servers 里面的一致-->
+			<!--这个是 snapshot 库的发布地址-->
+			<id>snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://192.168.16.37:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

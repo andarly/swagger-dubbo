@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.deepoove.swagger.dubbo.example.api.pojo.User;
 import com.deepoove.swagger.dubbo.example.api.service.UserService;
-
+@com.alibaba.dubbo.config.annotation.Service(protocol = {"dubbo"}, validation = "true", interfaceClass = UserService.class)
 public class UserServiceImpl implements UserService {
 
 	static User user = new User();

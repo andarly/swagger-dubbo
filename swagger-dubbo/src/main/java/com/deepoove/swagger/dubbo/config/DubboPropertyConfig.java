@@ -1,10 +1,13 @@
 package com.deepoove.swagger.dubbo.config;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.alibaba.dubbo.config.ServiceConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +34,8 @@ public class DubboPropertyConfig implements SwaggerConfig {
 	@Autowired
     private ServletContext servletContext;
 
+	@Autowired
+	DubboServiceScanner dubboServiceScanner;
 	private static String dependencyHtml = "&lt;dependency&gt;<br/>" 
 										+ "&nbsp;&nbsp;&nbsp;&nbsp;&lt;groupId&gt;{0}&lt;/groupId&gt;<br/>"
 										+ "&nbsp;&nbsp;&nbsp;&nbsp;&lt;artifactId&gt;{1}&lt;/artifactId&gt;<br/>" 
@@ -40,10 +45,13 @@ public class DubboPropertyConfig implements SwaggerConfig {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Swagger configure(Swagger swagger) {
-		Map<?, ServiceBean> serviceBeans = ServiceBean.getSpringContext().getBeansOfType(ServiceBean.class);
+		Map<?, ServiceConfig> serviceBeans = ServiceBean.getSpringContext().getBeansOfType(ServiceBean.class);
 		ApplicationConfig application = null;
-		if (serviceBeans.values().size() > 0) {
-			ServiceBean<?> bean = serviceBeans.values().toArray(new ServiceBean[]{})[0];
+		List<ServiceConfig> providers=new ArrayList();
+		providers.addAll(serviceBeans.values());
+		providers.addAll(dubboServiceScanner.getAnnotatonProviders());
+		if (providers.size() > 0) {
+			ServiceBean<?> bean = providers.toArray(new ServiceBean[]{})[0];
 			application = bean.getApplication();
 
 			Info info = swagger.getInfo();

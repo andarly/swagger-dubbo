@@ -8,19 +8,19 @@
 
 	<dubbo:application name="dubbo-example-app" />
 
-	<dubbo:registry address="zookeeper://127.0.0.1:7181"
+	<dubbo:registry address="zookeeper://192.168.16.37:2181"
 		client="curator" />
 
 
 	<dubbo:protocol name="dubbo" port="20880" />
 
-	<dubbo:service
-		interface="com.deepoove.swagger.dubbo.example.api.service.UserService"
-		ref="userRemoteService" />
+	<!--<dubbo:service-->
+		<!--interface="com.deepoove.swagger.dubbo.example.api.service.UserService"-->
+		<!--ref="userRemoteService" />-->
 
-	<bean id="userRemoteService"
-		class="com.deepoove.swagger.dubbo.example.provider.UserServiceImpl" />
-	<dubbo:service
+	<!--<bean id="userRemoteService"-->
+		<!--class="com.deepoove.swagger.dubbo.example.provider.UserServiceImpl" />-->
+	<!--<dubbo:service
 		interface="com.deepoove.swagger.dubbo.example.api.service.PushService"
 		ref="pushRemoteService" />
 
@@ -31,7 +31,7 @@
 		ref="accountRemoteService" />
 
 	<bean id="accountRemoteService"
-		class="com.deepoove.swagger.dubbo.example.provider.AccountServiceImpl" />
+		class="com.deepoove.swagger.dubbo.example.provider.AccountServiceImpl" />-->
 
-
+	<dubbo:annotation package="com.deepoove.swagger.dubbo.example.provider"/>
 </beans>
