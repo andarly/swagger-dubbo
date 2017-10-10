@@ -45,7 +45,7 @@ public class DubboPropertyConfig implements SwaggerConfig {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Swagger configure(Swagger swagger) {
-		Map<?, ServiceConfig> serviceBeans = ServiceBean.getSpringContext().getBeansOfType(ServiceBean.class);
+		Map<String, ServiceBean> serviceBeans = ServiceBean.getSpringContext().getBeansOfType(ServiceBean.class);
 		ApplicationConfig application = null;
 		List<ServiceConfig> providers=new ArrayList();
 		providers.addAll(serviceBeans.values());

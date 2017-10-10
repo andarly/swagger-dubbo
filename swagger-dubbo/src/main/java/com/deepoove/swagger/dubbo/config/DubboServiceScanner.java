@@ -35,8 +35,8 @@ public class DubboServiceScanner implements Scanner {
 
 	public Set<ServiceConfig<?>>  getAnnotatonProviders(){
 
-		AnnotationBean annotationBean = (AnnotationBean) ServiceBean.getSpringContext().getBean(AnnotationBean.class.getName());
 		try {
+		AnnotationBean annotationBean = (AnnotationBean) ServiceBean.getSpringContext().getBean(AnnotationBean.class.getName());
 			Field field = AnnotationBean.class.getDeclaredField("serviceConfigs");
 			field .setAccessible(true);
 			Set<ServiceConfig<?>> serviceConfigs = (Set<ServiceConfig<?>>) field .get(annotationBean);
@@ -45,6 +45,8 @@ public class DubboServiceScanner implements Scanner {
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return new HashSet<ServiceConfig<?>>(0);

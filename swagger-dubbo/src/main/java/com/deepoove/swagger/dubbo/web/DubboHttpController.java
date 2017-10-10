@@ -1,17 +1,13 @@
 package com.deepoove.swagger.dubbo.web;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.deepoove.swagger.dubbo.config.DubboServiceScanner;
+import com.deepoove.swagger.dubbo.http.HttpMatch;
+import com.deepoove.swagger.dubbo.reader.DubboReaderExtension;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import io.swagger.annotations.Api;
+import io.swagger.util.Json;
+import io.swagger.util.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +16,22 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.deepoove.swagger.dubbo.config.DubboServiceScanner;
-import com.deepoove.swagger.dubbo.http.HttpMatch;
-import com.deepoove.swagger.dubbo.reader.DubboReaderExtension;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import io.swagger.annotations.Api;
-import io.swagger.util.Json;
-import io.swagger.util.PrimitiveType;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 @Controller
 @RequestMapping("${swagger.dubbo.http:h}")
@@ -74,7 +73,7 @@ public class DubboHttpController {
 		for (Entry<Class<?>, Object> entry : entrySet) {
 			Class<?> key = entry.getKey();
 			if (key.getName().equals(interfaceClass)) {
-				HttpMatch httpMatch = new HttpMatch(entry.getKey(), entry.getValue().getClass());
+				HttpMatch httpMatch = new HttpMatch(entry.getKey(),entry.getValue().getClass() );
 				Method[] interfaceMethods = httpMatch.findInterfaceMethods(methodName);
 
 				if (null != interfaceMethods && interfaceMethods.length > 0) {
@@ -90,20 +89,26 @@ public class DubboHttpController {
 						Json.pretty(request.getParameterMap()));
 				String[] parameterNames = DubboReaderExtension.parameterNameDiscover
 						.getParameterNames(method);
-				if (null == parameterNames || parameterNames.length == 0) {
-					invoke = method.invoke(entry.getValue());
-				} else {
-					List<Object> args = new ArrayList<Object>();
-					Type[] parameterTypes = method.getGenericParameterTypes();
-					Class<?>[] parameterClazz = method.getParameterTypes();
+				try{
+					if (null == parameterNames || parameterNames.length == 0) {
+						invoke = method.invoke(entry.getValue());
+					} else {
+						List<Object> args = new ArrayList<Object>();
+						Type[] parameterTypes = method.getGenericParameterTypes();
+						Class<?>[] parameterClazz = method.getParameterTypes();
 
-					for (int i = 0; i < parameterNames.length; i++) {
-						Object suggestPrameterValue = suggestPrameterValue(parameterTypes[i],
-								parameterClazz[i], request.getParameter(parameterNames[i]));
-						args.add(suggestPrameterValue);
+						for (int i = 0; i < parameterNames.length; i++) {
+							Object suggestPrameterValue = suggestPrameterValue(parameterTypes[i],
+									parameterClazz[i], request.getParameter(parameterNames[i]));
+							args.add(suggestPrameterValue);
+						}
+						invoke = method.invoke(entry.getValue(), args.toArray());
 					}
-					invoke = method.invoke(entry.getValue(), args.toArray());
+				}catch (InvocationTargetException e){
+					e.printStackTrace();
+					return ResponseEntity.ok("{\"errorMessage\":\""+e.getTargetException().getMessage()+"\"}");
 				}
+
 				break;
 			}
 		}
@@ -129,6 +134,21 @@ public class DubboHttpController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	/**
+	 * 无效...
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseBody
+	public String handleOtherException( RuntimeException ex) {
+
+				String responseString = "{'code':'2','errMessage':'"+ex.getMessage()+"'}";
+
+				return responseString;
 	}
 
 }

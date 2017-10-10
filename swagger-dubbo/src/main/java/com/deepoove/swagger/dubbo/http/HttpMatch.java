@@ -71,7 +71,7 @@ public class HttpMatch {
 		Collections.sort(ret, new Comparator<Method>() {
 			@Override
 			public int compare(Method o1, Method o2) {
-				return o2.getParameterCount() - o1.getParameterCount();
+				return o2.getTypeParameters().length - o1.getTypeParameters().length;
 			}
 		});
 		return ret.toArray(new Method[] {});
