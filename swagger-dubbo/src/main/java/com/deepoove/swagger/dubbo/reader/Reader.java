@@ -12,14 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 
-import io.swagger.annotations.ApiKeyAuthDefinition;
-import io.swagger.annotations.BasicAuthDefinition;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.OAuth2Definition;
-import io.swagger.annotations.Scope;
-import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.models.Contact;
 import io.swagger.models.ExternalDocs;
 import io.swagger.models.License;
@@ -75,11 +70,11 @@ public class Reader {
 			}
 		});
 		for (Entry<Class<?>, Object> entry : arrayList) {
-			final ReaderContext context = new ReaderContext(swagger,
-					entry.getValue().getClass(), entry.getKey(), httpContext, null, false,
-					new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
-					new ArrayList<Parameter>());
-			reader.read(context);
+				final ReaderContext context = new ReaderContext(swagger,
+						entry.getValue().getClass(), entry.getKey(), httpContext, null, false,
+						new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
+						new ArrayList<Parameter>());
+				reader.read(context);
 		}
 	}
 

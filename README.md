@@ -93,7 +93,23 @@ swagger.dubbo.application.artifactId = dubbo.api
 
 ### [文章：探讨Dubbo与Swagger的集成](https://github.com/Sayi/sayi.github.com/issues/15)
 
+
+在原有的基础上做的修改
+1、
+修改前：框架访问swagger.json只出现使用xml方式暴露的服务，不显示注解方式暴露的服务
+修改后：经过修改已经支持注解方式暴露的服务
+
+2、
+修改前：框架不支持参数为List<T>的方法
+修改后：框架支持参数为List<T>的方法
+
+3、
+修改前：框架没有统一返回格式
+修改后：返回统一格式{"code":"1","data":{}}
+
+4、修改jdk8为jdk7
+
  
 
-
+版本升级命令  mvn versions:set -DnewVersion=1.0.3.2-alpha
 

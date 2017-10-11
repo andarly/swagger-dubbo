@@ -4,6 +4,8 @@
 .settings/
 bin/
 
+*.versionsBackup
+
 # Package Files #
 *.jar
 *.war

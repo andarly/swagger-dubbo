@@ -29,11 +29,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 @Controller
 @RequestMapping("${swagger.dubbo.http:h}")
@@ -108,14 +105,21 @@ public class DubboHttpController {
 					}
 				}catch (InvocationTargetException e){
 					e.printStackTrace();
-					return ResponseEntity.ok("{\"errorMessage\":\""+e.getTargetException().getMessage()+"\"}");
+					Map map=new HashMap();
+					map.put("code","2");
+					map.put("errorMessage",e.getTargetException().getMessage());
+//					return ResponseEntity.ok("{\"errorMessage\":\""+e.getTargetException().getMessage()+"\"}");
+					return ResponseEntity.ok(Json.mapper().writeValueAsString(map));
 				}
 
 				break;
 			}
 		}
 
-		return ResponseEntity.ok(Json.mapper().writeValueAsString(invoke));
+		Map map=new HashMap();
+		map.put("code","1");
+		map.put("data",invoke);
+		return ResponseEntity.ok(Json.mapper().writeValueAsString(map));
 	}
 
 	public  class MyTypeReference<Void> extends TypeReference<Void>

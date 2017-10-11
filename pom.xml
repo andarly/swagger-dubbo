@@ -9,7 +9,7 @@
 
 	<groupId>com.deepoove</groupId>
 	<artifactId>swagger-dubbo-project</artifactId>
-	<version>1.0.3-alpha</version>
+	<version>1.0.3.3-alpha</version>
 	<packaging>pom</packaging>
 
 	<name>swagger-dubbo-project</name>
@@ -22,6 +22,24 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
+
+
+	<distributionManagement>
+		<repository>
+			<!--这里面的名字要跟 setting.xml 文件中 servers 里面的一致-->
+			<!--这个是 release 库的发布地址-->
+			<id>releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://192.168.16.37:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<!--这里面的名字要跟 setting.xml 文件中 servers 里面的一致-->
+			<!--这个是 snapshot 库的发布地址-->
+			<id>snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://192.168.16.37:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<developers>
 		<developer>
@@ -40,16 +58,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	<distributionManagement>
-		<snapshotRepository>
-			<id>oss</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</snapshotRepository>
-		<repository>
-			<id>oss</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+
 
 	
 	<profiles>
@@ -146,4 +155,6 @@
 		<module>swagger-dubbo</module>
 		<module>swagger-dubbo-example</module>
 	</modules>
+
+
 </project>
