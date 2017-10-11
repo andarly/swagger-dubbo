@@ -30,4 +30,7 @@ public interface UserService {
 	@ApiOperation(value = "比较用户")
 	int compare(User src, User dest);
 
+	@ApiOperation(value = "比较用户")
+	int compare2(List<User> src);
+
 }

@@ -4,6 +4,7 @@ import com.deepoove.swagger.dubbo.config.DubboServiceScanner;
 import com.deepoove.swagger.dubbo.http.HttpMatch;
 import com.deepoove.swagger.dubbo.reader.DubboReaderExtension;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import io.swagger.annotations.Api;
 import io.swagger.util.Json;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +118,19 @@ public class DubboHttpController {
 		return ResponseEntity.ok(Json.mapper().writeValueAsString(invoke));
 	}
 
+	public  class MyTypeReference<Void> extends TypeReference<Void>
+	{
+		protected Type _type;
+
+		protected MyTypeReference(Type type)
+		{
+			_type=type;
+		}
+
+		public Type getType() { return _type; }
+
+
+	}
 	private Object suggestPrameterValue(Type type, Class<?> cls, String parameter)
 			throws JsonParseException, JsonMappingException, IOException {
 		PrimitiveType fromType = PrimitiveType.fromType(type);
@@ -125,7 +140,10 @@ public class DubboHttpController {
 			if (actual) { return service.convert(parameter, cls); }
 		} else {
 			if (null == parameter) return null;
-			Object obj = Json.mapper().readValue(parameter, cls);
+//			if(cls == type.getClass()){
+//			Object obj = Json.mapper().readValue(parameter, cls);
+//			}
+			Object obj = Json.mapper().readValue(parameter, new MyTypeReference(type));
 			return obj;
 		}
 		try {

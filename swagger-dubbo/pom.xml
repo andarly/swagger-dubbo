@@ -8,6 +8,7 @@
 		<artifactId>swagger-dubbo-project</artifactId>
 		<version>1.0.3-alpha</version>
 	</parent>
+	<version>1.0.3.1-alpha</version>
 	<artifactId>swagger-dubbo</artifactId>
 	<packaging>jar</packaging>
 	<name>swagger-dubbo</name>

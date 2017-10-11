@@ -49,4 +49,10 @@ public class UserServiceImpl implements UserService {
 		return 0;
 	}
 
+	@Override
+	public int compare2(List<User> src) {
+		System.out.println("src = [" + src.get(0).getId() + "]");
+		return 0;
+	}
+
 }
