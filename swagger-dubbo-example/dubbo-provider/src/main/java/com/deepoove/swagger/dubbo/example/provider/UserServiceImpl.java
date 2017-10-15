@@ -5,6 +5,9 @@ import java.util.List;
 
 import com.deepoove.swagger.dubbo.example.api.pojo.User;
 import com.deepoove.swagger.dubbo.example.api.service.UserService;
+import org.springframework.stereotype.Service;
+
+@Service
 @com.alibaba.dubbo.config.annotation.Service(protocol = {"dubbo"}, validation = "true", interfaceClass = UserService.class)
 public class UserServiceImpl implements UserService {
 
@@ -34,15 +37,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void save(User user) {}
+	public void save(User user) {
 
-	@Override
-	public User update(User user) {
-		return null;
 	}
 
 	@Override
-	public void delete(String id) {}
+	public User update(User user) {
+		return user;
+	}
+
+	@Override
+	public void delete(String id) {
+		System.out.println("id = [" + id + "]");
+	}
 
 	@Override
 	public int compare(User src, User dest) {

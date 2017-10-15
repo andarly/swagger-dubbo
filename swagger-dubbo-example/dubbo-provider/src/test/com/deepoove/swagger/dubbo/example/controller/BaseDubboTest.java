@@ -1,6 +1,8 @@
 package com.deepoove.swagger.dubbo.example.controller;
 
 import com.alibaba.dubbo.config.ProtocolConfig;
+import com.deepoove.swagger.dubbo.example.api.service.UserService;
+import com.deepoove.swagger.dubbo.example.provider.UserServiceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -30,6 +34,10 @@ public class BaseDubboTest {
     //    @Autowired
 //    SecurityManager securityManager;
     protected Logger log;
+
+
+    @Autowired
+    UserServiceImpl userService;
 
     @Before
 
@@ -54,5 +62,10 @@ public class BaseDubboTest {
 
 //        sysUserExtSer.login(null, null, null);
 //        sysUserService.login(null, null, null);
+
+
+        userService.get("");
     }
+
+
 }

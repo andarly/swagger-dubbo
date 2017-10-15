@@ -11,6 +11,7 @@ import io.swagger.util.Json;
 import io.swagger.util.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -64,7 +65,8 @@ public class DubboHttpController {
 			HttpServletResponse response) throws Exception {
 		if (!enable) { return new ResponseEntity<String>(HttpStatus.NOT_FOUND); }
 
-		Method method = null;
+
+
 		Object invoke = null;
 		// find ref class
 		Map<Class<?>, Object> interfaceMapRef = dubboServiceScanner.interfaceMapRef();
@@ -72,6 +74,7 @@ public class DubboHttpController {
 		for (Entry<Class<?>, Object> entry : entrySet) {
 			Class<?> key = entry.getKey();
 			if (key.getName().equals(interfaceClass)) {
+				Method method = null;
 				HttpMatch httpMatch = new HttpMatch(entry.getKey(),entry.getValue().getClass() );
 				Method[] interfaceMethods = httpMatch.findInterfaceMethods(methodName);
 
@@ -86,8 +89,23 @@ public class DubboHttpController {
 				// invoke method
 				logger.debug("[Swagger-dubbo] Invoke dubbo service method:{},parameter:{}", method,
 						Json.pretty(request.getParameterMap()));
+				Method tagetMethod = null;
+				//如果是代理类，要通过目标类的class文件获取参数
+				if(AopUtils.isAopProxy(entry.getValue())){
+
+				HttpMatch httpMatch2 = new HttpMatch(entry.getKey(),AopUtils.getTargetClass(entry.getValue()));
+					Method[] interfaceMethods2 = httpMatch2.findInterfaceMethods(methodName);
+
+					if (null != interfaceMethods2 && interfaceMethods2.length > 0) {
+						Method[] refMethods = httpMatch2.findRefMethods(interfaceMethods2, operationId,
+								request.getMethod());
+						tagetMethod = httpMatch.matchRefMethod(refMethods, methodName, request.getParameterMap().keySet());
+					}
+				}else {
+					tagetMethod=method;
+				}
 				String[] parameterNames = DubboReaderExtension.parameterNameDiscover
-						.getParameterNames(method);
+						.getParameterNames(tagetMethod);
 				try{
 					if (null == parameterNames || parameterNames.length == 0) {
 						invoke = method.invoke(entry.getValue());

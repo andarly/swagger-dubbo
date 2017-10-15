@@ -29,6 +29,7 @@ import io.swagger.models.parameters.Parameter;
 import io.swagger.util.BaseReaderUtils;
 import io.swagger.util.PathUtils;
 import io.swagger.util.ReflectionUtils;
+import org.springframework.aop.support.AopUtils;
 
 /**
  * The <code>Reader</code> class scans classes for Swagger annotations.
@@ -70,8 +71,16 @@ public class Reader {
 			}
 		});
 		for (Entry<Class<?>, Object> entry : arrayList) {
-				final ReaderContext context = new ReaderContext(swagger,
-						entry.getValue().getClass(), entry.getKey(), httpContext, null, false,
+
+			Class<?> clazz;
+			if(AopUtils.isAopProxy(entry.getValue())){
+				clazz=AopUtils.getTargetClass(entry.getValue());
+			}else {
+				clazz=entry.getValue().getClass();
+			}
+
+			final ReaderContext context = new ReaderContext(swagger,
+						clazz, entry.getKey(), httpContext, null, false,
 						new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
 						new ArrayList<Parameter>());
 				reader.read(context);
