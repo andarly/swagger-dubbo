@@ -111,5 +111,6 @@ swagger.dubbo.application.artifactId = dubbo.api
 
  
 
-版本升级命令  mvn versions:set -DnewVersion=1.0.3.2-alpha
+版本升级命令  
+mvn versions:set -DnewVersion=1.0.3.4-alpha
 
